@@ -1,0 +1,62 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: {{ include "pgpool-helm.fullname" . }}
+  labels:
+    app.kubernetes.io/name: {{ include "pgpool-helm.name" . }}
+    helm.sh/chart: {{ include "pgpool-helm.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include "pgpool-helm.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: {{ include "pgpool-helm.name" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+    spec:
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - name: postgres
+              containerPort: 5432
+              protocol: TCP
+          livenessProbe:
+            exec:
+              command: ['bash', '-c', '/usr/local/bin/pgpool/has_write_node.sh && /usr/local/bin/pgpool/has_enough_backends.sh']
+            initialDelaySeconds: 600
+            timeoutSeconds: 10
+            periodSeconds: 30
+            successThreshold: 1
+            failureThreshold: 3
+          env:
+          - name: BACKENDS
+            value: {{ .Values.env.BACKENDS }}
+          - name: CONFIGS
+            value: {{ .Values.env.CONFIGS }}
+          - name: DB_USERS
+            value: {{ .Values.env.DB_USERS }}
+          - name: REQUIRE_MIN_BACKENDS
+            value: "{{ .Values.env.REQUIRE_MIN_BACKENDS }}"
+          - name: WAIT_BACKEND_TIMEOUT
+            value: "{{ .Values.env.WAIT_BACKEND_TIMEOUT }}"
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
