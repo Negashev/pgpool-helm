@@ -34,7 +34,7 @@ Create chart name and version as used by the chart label.
 Find stolon namespace
 */}}
 {{- define "pgpool-helm.stolon" -}}
-{{- printf .Release.Namespace | replace .Values.namespace.pgpool .Values.namespace.stolon -}}
+{{- printf .Release.Namespace | replace (include "pgpool-helm.name" .) .Values.namespace.stolon -}}
 {{- end -}}
 {{/*
 Generate default backend for github.com/lwolf/stolon-chart

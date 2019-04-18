@@ -3,7 +3,6 @@
 # Declare variables to be passed into your templates.
 namespace:
   stolon: stolon
-  pgpool: pgpool
 image:
   repository: postdock/pgpool
   tag: 1.12-pgpool37-postgres96
