@@ -8,7 +8,6 @@ metadata:
     app.kubernetes.io/instance: {{ .Release.Name }}
     app.kubernetes.io/managed-by: {{ .Release.Service }}
 spec:
-  replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
       app.kubernetes.io/name: {{ include "pgpool-helm.name" . }}
@@ -37,11 +36,11 @@ spec:
             failureThreshold: 3
           env:
           - name: BACKENDS
-            value: {{ .Values.env.BACKENDS }}
+            value: "{{ .Values.env.BACKENDS | default (include "pgpool-helm.makeBackends" .)  }}"
           - name: CONFIGS
-            value: {{ .Values.env.CONFIGS }}
+            value: "{{ .Values.env.CONFIGS }}"
           - name: DB_USERS
-            value: {{ .Values.env.DB_USERS }}
+            value: "{{ .Values.env.DB_USERS }}"
           - name: REQUIRE_MIN_BACKENDS
             value: "{{ .Values.env.REQUIRE_MIN_BACKENDS }}"
           - name: WAIT_BACKEND_TIMEOUT

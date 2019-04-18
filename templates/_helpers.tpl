@@ -30,3 +30,15 @@ Create chart name and version as used by the chart label.
 {{- define "pgpool-helm.chart" -}}
 {{- printf "%s-%s" .Chart.Name .Chart.Version | replace "+" "_" | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
+{{/*
+Find stolon namespace
+*/}}
+{{- define "pgpool-helm.stolon" -}}
+{{- printf .Release.Namespace | replace .Values.namespace.pgpool .Values.namespace.stolon -}}
+{{- end -}}
+{{/*
+Generate default backend for github.com/lwolf/stolon-chart
+*/}}
+{{- define "pgpool-helm.makeBackends" -}}
+{{- printf "0:%s-stolon-proxy.%s::::ALWAYS_MASTER,1:%s-stolon-keeper.%s::::DISALLOW_TO_FAILOVER" (include "pgpool-helm.stolon" .) (include "pgpool-helm.stolon" .) (include "pgpool-helm.stolon" .) (include "pgpool-helm.stolon" .) -}}
+{{- end -}}
