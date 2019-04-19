@@ -3,3 +3,4 @@ appVersion: "1.0"
 description: PGPool Helm chart for Kubernetes
 name: pgpool
 version: 0.1.0
+icon: http://pgpool.net/mediawiki/images/pgpool-II_elephant_150x150.png
