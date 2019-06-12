@@ -36,7 +36,7 @@ spec:
             failureThreshold: 3
           env:
           - name: BACKENDS
-            value: "{{ .Values.env.BACKENDS | default (include "pgpool-helm.makeBackends" .)  }}""
+            value: "{{ .Values.env.BACKENDS | default (include "pgpool-helm.makeBackends" .)  }}"
           {{- range $key, $value := .Values.env }}
           {{- if not (eq $key "BACKENDS") }}
           - name: {{ $key }}
