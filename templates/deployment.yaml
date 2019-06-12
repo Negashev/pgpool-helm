@@ -36,15 +36,13 @@ spec:
             failureThreshold: 3
           env:
           - name: BACKENDS
-            value: "{{ .Values.env.BACKENDS | default (include "pgpool-helm.makeBackends" .)  }}"
-          - name: CONFIGS
-            value: "{{ .Values.env.CONFIGS }}"
-          - name: DB_USERS
-            value: "{{ .Values.env.DB_USERS }}"
-          - name: REQUIRE_MIN_BACKENDS
-            value: "{{ .Values.env.REQUIRE_MIN_BACKENDS }}"
-          - name: WAIT_BACKEND_TIMEOUT
-            value: "{{ .Values.env.WAIT_BACKEND_TIMEOUT }}"
+            value: "{{ .Values.env.BACKENDS | default (include "pgpool-helm.makeBackends" .)  }}""
+          {{- range $key, $value := .Values.env }}
+          {{- if not (eq $key "BACKENDS") }}
+          - name: {{ $key }}
+            value: "{{ $value }}"
+          {{- end }}
+          {{- end }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
       {{- with .Values.nodeSelector }}
