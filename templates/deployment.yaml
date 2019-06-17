@@ -27,12 +27,21 @@ spec:
               containerPort: 5432
               protocol: TCP
           livenessProbe:
+            failureThreshold: 3
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            successThreshold: 1
             tcpSocket:
               port: postgres
+            timeoutSeconds: 1
           readinessProbe:
+            failureThreshold: 3
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            successThreshold: 1
             tcpSocket:
               port: postgres
-            initialDelaySeconds: 60
+            timeoutSeconds: 1
           env:
           - name: BACKENDS
             value: "{{ .Values.env.BACKENDS | default (include "pgpool-helm.makeBackends" .)  }}"
