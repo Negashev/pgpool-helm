@@ -27,13 +27,12 @@ spec:
               containerPort: 5432
               protocol: TCP
           livenessProbe:
-            exec:
-              command: ['bash', '-c', '/usr/local/bin/pgpool/has_write_node.sh && /usr/local/bin/pgpool/has_enough_backends.sh']
-            initialDelaySeconds: 600
-            timeoutSeconds: 10
-            periodSeconds: 30
-            successThreshold: 1
-            failureThreshold: 3
+            tcpSocket:
+              port: postgres
+          readinessProbe:
+            tcpSocket:
+              port: postgres
+            initialDelaySeconds: 60
           env:
           - name: BACKENDS
             value: "{{ .Values.env.BACKENDS | default (include "pgpool-helm.makeBackends" .)  }}"
