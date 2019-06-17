@@ -40,5 +40,5 @@ Find stolon namespace
 Generate default backend for github.com/lwolf/stolon-chart
 */}}
 {{- define "pgpool-helm.makeBackends" -}}
-{{- printf "0:%s-stolon-proxy.%s::::ALWAYS_MASTER,1:%s-stolon-keeper.%s::::DISALLOW_TO_FAILOVER" (include "pgpool-helm.stolon" .) (include "pgpool-helm.stolon" .) (include "pgpool-helm.stolon" .) (include "pgpool-helm.stolon" .) -}}
+{{- printf "0:%s-proxy.%s::::ALWAYS_MASTER,1:%s-keeper-headless.%s::::DISALLOW_TO_FAILOVER" (include "pgpool-helm.stolon" .) (include "pgpool-helm.stolon" .) (include "pgpool-helm.stolon" .) (include "pgpool-helm.stolon" .) -}}
 {{- end -}}
