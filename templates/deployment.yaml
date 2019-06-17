@@ -27,13 +27,13 @@ spec:
               containerPort: 5432
               protocol: TCP
           livenessProbe:
-            failureThreshold: 3
+            exec:
+              command: ['bash', '-c', '/usr/local/bin/pgpool/has_write_node.sh && /usr/local/bin/pgpool/has_enough_backends.sh']
             initialDelaySeconds: 10
-            periodSeconds: 10
+            timeoutSeconds: 10
+            periodSeconds: 30
             successThreshold: 1
-            tcpSocket:
-              port: postgres
-            timeoutSeconds: 1
+            failureThreshold: 3
           readinessProbe:
             failureThreshold: 3
             initialDelaySeconds: 10
